@@ -1,0 +1,102 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Playfair&#43;Display:700,900&amp;display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.min.css">
+        <style>
+            body {
+                padding: 5px;
+            }
+        </style>
+    </head>
+    <body class="m-0 p-0">
+        <main class="p-0">
+            <div class="row mb-3">
+                <div class="col">
+                    <div class="row g-2">
+                        <div class="col col-auto">
+                            <img src="{{ icon_date_url }}" width="35" height="35" />
+                        </div>
+                        <div class="col d-flex align-items-end">
+                            <h6>COVID-19 Guidance Explorer: Search Results</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-auto text-right">
+                    <small>
+                        <strong>{{ now }}</strong>
+                    </small>
+                </div>
+            </div>
+            <div class="card mb-3 border-primary">
+                <div class="card-body p-2 pb-1">
+                    <h6 class="card-title text-muted">Statistics</h6>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Result</th>
+                                <th># Matches</th>
+                                <th># Total</th>
+                                <th>% Matches</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Documents</td>
+                                <td>{{ "{:,}".format(num_document_matches) }}</td>
+                                <td>{{ "{:,}".format(num_documents) }}</td>
+                                <td>{{ "{:.2%}".format(percent_document_matches) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Document Versions</td>
+                                <td>{{ "{:,}".format(num_version_matches) }}</td>
+                                <td>{{ "{:,}".format(num_versions) }}</td>
+                                <td>{{ "{:.2%}".format(percent_version_matches) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card mb-3 border-primary">
+                <div class="card-body p-2 pb-1">
+                    <h6 class="card-title text-muted">Parameters</h6>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Search String</td>
+                                <td>
+                                    <code class="language-plaintext highlighter-rouge">{{ search_string }}</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Search Mode</td>
+                                <td>
+                                    <code class="language-plaintext highlighter-rouge"> {{ search_mode }} </code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Case Sensitive</td>
+                                <td>
+                                    <code class="language-plaintext highlighter-rouge">
+                                        {% if case_sensitive %}
+                                        Yes
+                                        {% else %}
+                                        No
+                                        {% endif %}
+                                    </code>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

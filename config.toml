@@ -1,0 +1,32 @@
+[general]
+title = "COVID-19 Guidance Explorer"
+host = "127.0.0.1"
+port = 5555
+debug = true
+bootswatch_theme = "flatly"
+secret_key = "aNECz+Jn6edQgCyBFGT6Xp2nwuWD04yNIz7GdN7mV/Y="
+
+[paths]
+project_root = "./covid19app"
+assets_folder = "./covid19app/assets"
+pages_folder = "./covid19app/pages"
+files_dir = "./covid19app/assets/data/files"
+processed_files_dir = "./covid19app/assets/data/processed_files"
+supplementary_files_dir = "./covid19app/assets/data/supplementary_files"
+issuer_icons_dir = "./covid19app/assets/data/issuer_icons"
+document_versions_thumbnails_dir = "./covid19app/assets/data/thumbnails/document_versions"
+documents_thumbnails_dir = "./covid19app/assets/data/thumbnails/documents"
+no_thumbnail_file = "./covid19app/assets/no_thumbnail.jpg"
+templates_dir = "./covid19app/assets/templates"
+temp_dir = "./covid19app/assets/temp"
+icon_file = "./covid19app/assets/icon.png"
+
+[postgres]
+database = "covid19"
+user = "covid19"
+password = "Vsb4k0qS9hlZP@X9$67RJ0Arx9YLL3mxngE*9d^^9Kx@6$12Tl"
+
+[redis]
+password = "lDOUD^dQr3pVr0#ZsAmQdWi7qlA45Xw5plFFt^10J&HrLQ3#ir"
+host = "localhost"
+port = 6379
