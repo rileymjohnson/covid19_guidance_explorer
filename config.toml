@@ -4,29 +4,29 @@ host = "127.0.0.1"
 port = 5555
 debug = true
 bootswatch_theme = "flatly"
-secret_key = "aNECz+Jn6edQgCyBFGT6Xp2nwuWD04yNIz7GdN7mV/Y="
+secret_key = "^J7#f3ocLdtZ9E$^aUASfhm6YV4e3r85g8QW8Zf@wt2nQqE#NFoLN&Bjnxev"
 
 [paths]
-project_root = "./covid19app"
-assets_folder = "./covid19app/assets"
-pages_folder = "./covid19app/pages"
-files_dir = "./covid19app/assets/data/files"
-processed_files_dir = "./covid19app/assets/data/processed_files"
-supplementary_files_dir = "./covid19app/assets/data/supplementary_files"
-issuer_icons_dir = "./covid19app/assets/data/issuer_icons"
-document_versions_thumbnails_dir = "./covid19app/assets/data/thumbnails/document_versions"
-documents_thumbnails_dir = "./covid19app/assets/data/thumbnails/documents"
-no_thumbnail_file = "./covid19app/assets/no_thumbnail.jpg"
-templates_dir = "./covid19app/assets/templates"
-temp_dir = "./covid19app/assets/temp"
-icon_file = "./covid19app/assets/icon.png"
+project_root = "./covid19_guidance_explorer"
+assets_folder = "./covid19_guidance_explorer/assets"
+pages_folder = "./covid19_guidance_explorer/pages"
+files_dir = "./covid19_guidance_explorer/assets/data/files"
+processed_files_dir = "./covid19_guidance_explorer/assets/data/processed_files"
+supplementary_files_dir = "./covid19_guidance_explorer/assets/data/supplementary_files"
+issuer_icons_dir = "./covid19_guidance_explorer/assets/data/issuer_icons"
+document_versions_thumbnails_dir = "./covid19_guidance_explorer/assets/data/thumbnails/document_versions"
+documents_thumbnails_dir = "./covid19_guidance_explorer/assets/data/thumbnails/documents"
+no_thumbnail_file = "./covid19_guidance_explorer/assets/no_thumbnail.jpg"
+templates_dir = "./covid19_guidance_explorer/assets/templates"
+temp_dir = "./covid19_guidance_explorer/assets/temp"
+icon_file = "./covid19_guidance_explorer/assets/icon.png"
 
 [postgres]
-database = "covid19"
-user = "covid19"
-password = "Vsb4k0qS9hlZP@X9$67RJ0Arx9YLL3mxngE*9d^^9Kx@6$12Tl"
+database = "covid19_guidance_explorer"
+user = "covid19_guidance_explorer"
+password = "259Xqbb8f&8NKgm&k^MoHzyQNNZ9tYdAA&yJMs4QKnsf8PhVqP!YErcUmt&8"
 
 [redis]
-password = "lDOUD^dQr3pVr0#ZsAmQdWi7qlA45Xw5plFFt^10J&HrLQ3#ir"
+password = "FXc4%^cnAuz6dx#TmRBXZuLw7nafbUVM7rA&m^xSED^HTNgNmAFLVU4zjL$9"
 host = "localhost"
 port = 6379

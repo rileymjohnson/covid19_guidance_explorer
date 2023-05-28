@@ -19,7 +19,7 @@ from PyQt6.QtCore import QMarginsF, QByteArray, QBuffer, Qt
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QApplication
 
-from covid19app.config import config
+from covid19_guidance_explorer.config import config
 
 
 COLORS = QColor.colorNames()

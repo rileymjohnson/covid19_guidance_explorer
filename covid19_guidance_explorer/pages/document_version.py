@@ -5,9 +5,9 @@ import dash_bootstrap_components as dbc
 from dash_quill import Quill
 import json
 
-from covid19app.utils import base64_encode_file, load_file
-from covid19app.pages import register_page
-from covid19app.database import (
+from covid19_guidance_explorer.utils import base64_encode_file, load_file
+from covid19_guidance_explorer.pages import register_page
+from covid19_guidance_explorer.database import (
     DocumentVersion,
     Language, FileType,
     Tag,

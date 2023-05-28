@@ -20,8 +20,8 @@ from typing import Optional, Generator
 from datetime import datetime
 from pathlib import Path
 
-from covid19app.config import config
-from covid19app.utils import (
+from covid19_guidance_explorer.config import config
+from covid19_guidance_explorer.utils import (
     random_color,
     PeeweeHelpers,
     file_to_url

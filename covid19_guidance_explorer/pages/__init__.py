@@ -1,6 +1,6 @@
 import dash
 
-from covid19app.config import config
+from covid19_guidance_explorer.config import config
 
 
 def register_page(*, title, **kwargs):

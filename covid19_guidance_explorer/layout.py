@@ -1,7 +1,7 @@
 from dash import Input, Output, State, html, dcc, page_container, clientside_callback, ALL
 import dash_bootstrap_components as dbc
 
-from covid19app.config import config
+from covid19_guidance_explorer.config import config
 
 
 clientside_callback(

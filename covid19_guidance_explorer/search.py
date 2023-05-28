@@ -1,7 +1,7 @@
 from typing import Optional, Literal, Generator
 import re
 
-from covid19app.database import database
+from covid19_guidance_explorer.database import database
 
 
 _search_results_columns = [

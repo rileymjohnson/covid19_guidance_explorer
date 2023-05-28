@@ -8,9 +8,9 @@ from celery import Celery
 from redis import Redis
 from furl import furl
 
-from covid19app.config import config
-from covid19app.layout import layout
-from covid19app.database import (
+from covid19_guidance_explorer.config import config
+from covid19_guidance_explorer.layout import layout
+from covid19_guidance_explorer.database import (
     Tag,
     DocumentTagThroughTable,
     Jurisdiction,

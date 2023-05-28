@@ -1,8 +1,8 @@
 from dash import html, dcc, Output, Input, State, callback, clientside_callback, ALL
 import dash_bootstrap_components as dbc
 
-from covid19app.pages import register_page
-from covid19app.database import (
+from covid19_guidance_explorer.pages import register_page
+from covid19_guidance_explorer.database import (
     DocumentVersionTagThroughTable,
     DocumentTagThroughTable,
     Tag

@@ -8,10 +8,10 @@ from uuid import uuid4
 import pandas as pd
 import fitz
 
-from covid19app.database import Document, DocumentVersion
-from covid19app.search import search
-from covid19app.config import config
-from covid19app.utils import (
+from covid19_guidance_explorer.database import Document, DocumentVersion
+from covid19_guidance_explorer.search import search
+from covid19_guidance_explorer.config import config
+from covid19_guidance_explorer.utils import (
     insert_html_as_pdf,
     base64_encode_file,
     clean_headline,

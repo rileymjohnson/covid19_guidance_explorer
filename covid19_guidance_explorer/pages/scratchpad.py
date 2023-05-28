@@ -3,7 +3,7 @@ from dash import html, dcc
 
 from datetime import datetime
 
-from covid19app.pages import register_page
+from covid19_guidance_explorer.pages import register_page
 
 
 def layout() -> html.Div:

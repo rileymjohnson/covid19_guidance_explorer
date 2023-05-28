@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "covid19app"
+name = "covid19_guidance_explorer"
 version = "0.1.0"
 description = "View, annotate, and search COVID-19 guidance documents."
 authors = ["Riley Johnson <rileymillerjohnson@gmail.com>"]
 readme = "README.md"
-packages = [{include = "covid19app"}]
+packages = [{include = "covid19_guidance_explorer"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
