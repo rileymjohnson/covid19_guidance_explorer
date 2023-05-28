@@ -1,5 +1,6 @@
 {
     "python.analysis.diagnosticSeverityOverrides": {},
     "python.defaultInterpreterPath": "C:\\Users\\riley\\AppData\\Local\\pypoetry\\Cache\\virtualenvs\\covid19app-YwEapWro-py3.11\\Scripts\\python.exe",
-    "python.terminal.activateEnvironment": true
+    "python.terminal.activateEnvironment": true,
+    "pytest.command": "C:\\Users\\riley\\AppData\\Local\\pypoetry\\Cache\\virtualenvs\\covid19app-YwEapWro-py3.11\\Scripts"
 }
