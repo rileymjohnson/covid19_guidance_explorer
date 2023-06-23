@@ -133,3 +133,6 @@ raw_files/
 single_texts/
 texts/
 vim_texts/
+
+# Jupyter notebooks
+*.ipynb
