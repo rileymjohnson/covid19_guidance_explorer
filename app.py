@@ -97,17 +97,18 @@ app._favicon = 'favicon.ico'
 
 if __name__ == '__main__':
     if config['general']['debug']:
-        app.run_server(
+        app.run(
             host=config['general']['host'],
             port=config['general']['port'],
             dev_tools_serve_dev_bundles=True,
             dev_tools_prune_errors=False,
             dev_tools_props_check=True,
+            dev_tools_hot_reload=True,
             dev_tools_ui=True,
             debug=True,
         )
     else:
-        app.run_server(
+        app.run(
             host=config['general']['host'],
             port=config['general']['port'],
             dev_tools_ui=False,
