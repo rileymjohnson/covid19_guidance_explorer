@@ -506,7 +506,9 @@ def layout(document_id=None) -> html.Div:
         else:
             file_data = load_file(file)
             file_data = HTMLParser(file_data)
-            for script_tag in file_data.css('script, meta[http-equiv="refresh"]'):
+            for script_tag in file_data.css(
+                'script, meta[http-equiv="refresh"]'
+            ):
                 script_tag.decompose()
             file_data = file_data.html
 

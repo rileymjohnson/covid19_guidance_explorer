@@ -1,4 +1,13 @@
-from dash import Input, Output, State, html, dcc, page_container, clientside_callback, ALL
+from dash import (
+    Input,
+    Output,
+    State,
+    html,
+    dcc,
+    page_container,
+    clientside_callback,
+    ALL
+)
 import dash_bootstrap_components as dbc
 
 from covid19_guidance_explorer.config import config
@@ -47,6 +56,7 @@ clientside_callback(
     prevent_initial_call=True
 )
 
+
 def layout(page_registry):
     navbar_links = []
 
@@ -56,7 +66,9 @@ def layout(page_registry):
                 dbc.ListGroupItem(
                     html.Div(
                         [
-                            html.I(className=f'bi bi-{page.get("icon", "search")}'),
+                            html.I(
+                                className=f'bi bi-{page.get("icon", "search")}'
+                            ),
                             html.Span(page['name'])
                         ]
                     ),

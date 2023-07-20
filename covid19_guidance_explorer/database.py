@@ -35,6 +35,7 @@ database = PostgresqlExtDatabase(
 )
 database.connect()
 
+
 class BaseModel(Model):
     created = DateTimeField(default=datetime.now)
 
@@ -60,10 +61,10 @@ class BaseModel(Model):
     def get_values(
         cls,
         *,
-        k: Optional[int]=None,
-        n: Optional[int]=None,
-        search_string: Optional[str]=None,
-        quick_search: Optional[bool]=False
+        k: Optional[int] = None,
+        n: Optional[int] = None,
+        search_string: Optional[str] = None,
+        quick_search: Optional[bool] = False
     ) -> Generator:
         selector = cls._selector()
 
@@ -94,8 +95,8 @@ class BaseModel(Model):
     def get_num_pages(
         cls,
         n: int,
-        search_string: Optional[str]=None,
-        quick_search: Optional[bool]=False
+        search_string: Optional[str] = None,
+        quick_search: Optional[bool] = False
     ) -> int:
         selector = cls.select(
             fn.CEIL(fn.COUNT(cls.id) / float(n))
@@ -129,6 +130,7 @@ class BaseModel(Model):
 
         return cls.preprocess(instance)
 
+
 class FileType(BaseModel):
     mimetype = CharField()
     suffix = CharField()
@@ -146,6 +148,7 @@ class FileType(BaseModel):
 
         return list(select_values)
 
+
 class Language(BaseModel):
     label = CharField()
     value = CharField()
@@ -161,6 +164,7 @@ class Language(BaseModel):
             .dicts()
 
         return list(select_values)
+
 
 class Tag(BaseModel):
     text = CharField()
@@ -185,6 +189,7 @@ class Tag(BaseModel):
             .select(
                 *PeeweeHelpers.all_but(cls, [cls.search_content])
             )
+
 
 class Jurisdiction(BaseModel):
     label = CharField()
@@ -211,6 +216,7 @@ class Jurisdiction(BaseModel):
             ) \
             .order_by(cls.label)
 
+
 class DocumentType(BaseModel):
     label = CharField()
     value = CharField()
@@ -234,6 +240,7 @@ class DocumentType(BaseModel):
             .select(
                 *PeeweeHelpers.all_but(cls, [cls.search_content])
             )
+
 
 class DocumentIssuer(BaseModel):
     long_name = TextField()
@@ -276,8 +283,11 @@ class DocumentIssuer(BaseModel):
             ) \
             .join(num_documents, on=(cls.id == num_documents.c.id)) \
             .switch(cls) \
-            .join(num_document_versions, on=(cls.id == num_document_versions.c.id)) \
+            .join(num_document_versions, on=(
+                cls.id == num_document_versions.c.id
+            )) \
             .objects()
+
 
 class Document(BaseModel):
     title = TextField()
@@ -361,13 +371,10 @@ class Document(BaseModel):
         document_versions_nums = DocumentVersion \
             .select(
                 DocumentVersion.id,
-                fn \
-                    .RANK() \
-                    .over(
-                        order_by=[DocumentVersion.effective_date],
-                        partition_by=[cls.id]
-                    ) \
-                    .alias('_')
+                fn.RANK().over(
+                    order_by=[DocumentVersion.effective_date],
+                    partition_by=[cls.id]
+                ).alias('_')
             ) \
             .join(cls) \
             .group_by(cls.id, DocumentVersion.id) \
@@ -389,7 +396,9 @@ class Document(BaseModel):
                     )
                 ).alias('_')
             ) \
-            .join(document_versions_nums, on=(DocumentVersion.id == document_versions_nums.c.id)) \
+            .join(document_versions_nums, on=(
+                DocumentVersion.id == document_versions_nums.c.id
+            )) \
             .join_from(DocumentVersion, cls) \
             .group_by(cls.id) \
             .alias('document_versions')
@@ -443,6 +452,7 @@ class Document(BaseModel):
             .join(termination_date, on=(cls.id == termination_date.c.id)) \
             .order_by(cls.slug) \
             .objects()
+
 
 class DocumentVersion(BaseModel):
     title = TextField()
@@ -555,17 +565,13 @@ class DocumentVersion(BaseModel):
         document_version_num = cls \
             .select(
                 cls.id,
-                fn \
-                    .RANK() \
-                    .over(
-                        order_by=[cls.effective_date],
-                        partition_by=[Document.id]
-                    ) \
-                    .alias('version_num')
+                fn.RANK().over(
+                    order_by=[cls.effective_date],
+                    partition_by=[Document.id]
+                ).alias('version_num')
             ) \
             .join(Document) \
             .alias('version_num')
-
 
         document_num_versions = cls \
             .select(
@@ -585,40 +591,60 @@ class DocumentVersion(BaseModel):
                 ]),
                 fn.ROW_TO_JSON(DocumentIssuer).alias('issuer'),
                 fn.TO_JSON(document_version_tags.c.tags).alias('tags'),
-                fn.TO_JSON(document_version_jurisdictions.c.jurisdictions).alias('jurisdictions'),
+                fn.TO_JSON(
+                    document_version_jurisdictions.c.jurisdictions
+                ).alias('jurisdictions'),
                 fn.TO_JSON(document_version_types.c.types).alias('types'),
-                fn.TO_JSON(document_version_num.c.version_num).alias('version_num'),
+                fn.TO_JSON(
+                    document_version_num.c.version_num
+                ).alias('version_num'),
                 document_num_versions.c.num_versions.alias('num_versions')
             ) \
             .join(Document) \
             .join(DocumentIssuer) \
-            .join(document_version_tags, JOIN['LEFT_OUTER'], on=(cls.id == document_version_tags.c.id)) \
-            .join(document_version_jurisdictions, JOIN['LEFT_OUTER'], on=(cls.id == document_version_jurisdictions.c.id)) \
-            .join(document_version_types, JOIN['LEFT_OUTER'], on=(cls.id == document_version_types.c.id)) \
-            .join(document_version_num, on=(cls.id == document_version_num.c.id)) \
-            .join(document_num_versions, on=(cls.id == document_num_versions.c.id)) \
+            .join(document_version_tags, JOIN['LEFT_OUTER'], on=(
+                cls.id == document_version_tags.c.id
+            )) \
+            .join(document_version_jurisdictions, JOIN['LEFT_OUTER'], on=(
+                cls.id == document_version_jurisdictions.c.id
+            )) \
+            .join(document_version_types, JOIN['LEFT_OUTER'], on=(
+                cls.id == document_version_types.c.id
+            )) \
+            .join(document_version_num, on=(
+                cls.id == document_version_num.c.id
+            )) \
+            .join(document_num_versions, on=(
+                cls.id == document_num_versions.c.id
+            )) \
             .order_by(cls.slug, cls.effective_date) \
             .objects()
+
 
 class DocumentDocumentTypeThroughTable(BaseModel):
     document_type = ForeignKeyField(DocumentType)
     document = ForeignKeyField(Document)
 
+
 class DocumentTagThroughTable(BaseModel):
     document = ForeignKeyField(Document)
     tag = ForeignKeyField(Tag)
+
 
 class DocumentJurisdictionThroughTable(BaseModel):
     jurisdiction = ForeignKeyField(Jurisdiction)
     document = ForeignKeyField(Document)
 
+
 class DocumentVersionDocumentTypeThroughTable(BaseModel):
     document_type = ForeignKeyField(DocumentType)
     document_version = ForeignKeyField(DocumentVersion)
 
+
 class DocumentVersionTagThroughTable(BaseModel):
     document_version = ForeignKeyField(DocumentVersion)
     tag = ForeignKeyField(Tag)
+
 
 class DocumentVersionJurisdictionThroughTable(BaseModel):
     jurisdiction = ForeignKeyField(Jurisdiction)

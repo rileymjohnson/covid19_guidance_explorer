@@ -27,6 +27,7 @@ _search_results_report_colors = [
     ('danger', 'white')
 ]
 
+
 def generate_search_results_pdf_report(
     search_string: str,
     *,
@@ -34,7 +35,7 @@ def generate_search_results_pdf_report(
         'phrase', 'simple', 'plain',
         'normal', 'string', 'regex'
     ] = 'normal',
-    case_sensitive: Optional[bool]=False
+    case_sensitive: Optional[bool] = False
 ) -> Path:
     save_file = Path(config['paths']['temp_dir']) \
         .joinpath(f'{uuid4()}.pdf')
@@ -76,9 +77,13 @@ def generate_search_results_pdf_report(
                     .strftime('%Y-%m-%d')
 
             if version['headline'] == '':
-                version['headline'] = '<strong class="error">No Headline</strong>'
+                version[
+                    'headline'
+                ] = '<strong class="error">No Headline</strong>'
             else:
-                version['headline'] = version['headline'].replace('\n', '<br/>')
+                version[
+                    'headline'
+                ] = version['headline'].replace('\n', '<br/>')
 
             version['headline'] = clean_headline(version['headline'])
 
@@ -242,6 +247,7 @@ def generate_search_results_pdf_report(
 
     return save_file
 
+
 def generate_search_results_report(
     search_string: str,
     *,
@@ -249,8 +255,8 @@ def generate_search_results_report(
         'phrase', 'simple', 'plain',
         'normal', 'string', 'regex'
     ] = 'normal',
-    case_sensitive: Optional[bool]=False,
-    file_type: Literal['csv', 'xlsx', 'pdf']='csv'
+    case_sensitive: Optional[bool] = False,
+    file_type: Literal['csv', 'xlsx', 'pdf'] = 'csv'
 ) -> Path:
     save_file = Path(config['paths']['temp_dir']) \
         .joinpath(f'{uuid4()}.{file_type}')
@@ -277,13 +283,15 @@ def generate_search_results_report(
         if search_result['termination_date'] is None:
             search_result['termination_date'] = 'N/A'
         else:
-            search_result['termination_date'] = search_result['termination_date'] \
-                .strftime('%Y-%m-%d')
+            search_result['termination_date'] = search_result[
+                'termination_date'
+            ].strftime('%Y-%m-%d')
 
         if search_result['headline'] == '':
             search_result['headline'] = 'No Headline'
         else:
-            search_result['headline'] = search_result['headline'].replace('\n', '<br/>')
+            search_result['headline'] = search_result['headline'] \
+                .replace('\n', '<br/>')
 
         search_result['headline'] = clean_headline(search_result['headline'])
 

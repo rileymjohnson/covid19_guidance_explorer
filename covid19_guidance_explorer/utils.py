@@ -1,4 +1,4 @@
-from typing import Union, List, Generator, Tuple, TypeVar, Optional, Literal
+from typing import Union, List, Iterable, Tuple, TypeVar, Optional
 from selectolax.parser import HTMLParser, Node
 from playhouse.postgres_ext import Model
 from uuid import uuid5, NAMESPACE_URL
@@ -14,7 +14,14 @@ import base64
 import fitz
 import re
 
-from PyQt6.QtGui import QPageLayout, QPageSize, QColor, QImageReader, QPageRanges, QImage
+from PyQt6.QtGui import (
+    QPageLayout,
+    QPageSize,
+    QColor,
+    QImageReader,
+    QPageRanges,
+    QImage,
+)
 from PyQt6.QtCore import QMarginsF, QByteArray, QBuffer, Qt
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QApplication
@@ -24,12 +31,17 @@ from covid19_guidance_explorer.config import config
 
 COLORS = QColor.colorNames()
 
+
 def random_color() -> str:
     return random.choice(COLORS)
 
+
 class PeeweeHelpers:
     @staticmethod
-    def all_but(model: Model, fields: Union[Field, List[Field]]) -> List[Field]:
+    def all_but(
+        model: Model,
+        fields: Union[Field, List[Field]]
+    ) -> List[Field]:
         if isinstance(fields, Field):
             fields = [fields]
         fields = [f.name for f in fields]
@@ -38,50 +50,61 @@ class PeeweeHelpers:
 
         for field_name in model._meta.sorted_field_names:
             if field_name not in fields:
-                all_but_fields.append(
-                    getattr(model, field_name)
-                )
+                all_but_fields.append(getattr(model, field_name))
 
         return all_but_fields
+
 
 def base64_encode_file(file: str | Path) -> str:
     mimetype, _ = guess_type(str(file))
 
-    with open(file, 'rb') as f:
+    with open(file, "rb") as f:
         data = base64.b64encode(f.read()).decode()
-        data = f'data:{mimetype};base64,{data}'
+        data = f"data:{mimetype};base64,{data}"
 
     return data
 
+
 def load_file(file: str) -> str:
     try:
-        return Path(file).read_text(encoding='utf-8')
+        return Path(file).read_text(encoding="utf-8")
     except UnicodeDecodeError:
         return Path(file).read_text()
+
 
 def file_to_url(file: str | Path) -> str:
     if isinstance(file, str):
         file = Path(file)
 
-    assets_base = Path(config['paths']['assets_folder']).parent
+    assets_base = Path(config["paths"]["assets_folder"]).parent
 
-    url = file \
-        .relative_to(assets_base) \
-        .as_posix()
+    url = file.relative_to(assets_base).as_posix()
 
-    return f'/{url}'
+    return f"/{url}"
+
 
 supplementary_file_formats = [
-    '.css', '.png', '.jpeg', '.jpg',
-    '.svg', '.gig', '.tif', '.tiff',
-    '.ico', '.webp', '.mp3', '.wav',
-    '.ogg', '.mp4', '.webm'
+    ".css",
+    ".png",
+    ".jpeg",
+    ".jpg",
+    ".svg",
+    ".gig",
+    ".tif",
+    ".tiff",
+    ".ico",
+    ".webp",
+    ".mp3",
+    ".wav",
+    ".ogg",
+    ".mp4",
+    ".webm",
 ]
+
 
 def clean_url(original_url, root_url):
     search = re.search(
-        '^(?:https://web.archive.org)?/web/[0-9]{14}[^/]*/(.*)$',
-        original_url
+        "^(?:https://web.archive.org)?/web/[0-9]{14}[^/]*/(.*)$", original_url
     )
 
     if search:
@@ -89,100 +112,89 @@ def clean_url(original_url, root_url):
     else:
         fixed_url = furl(original_url)
 
-    fixed_url = fixed_url.remove(
-        fragment=True,
-        args=True
-    )
+    fixed_url = fixed_url.remove(fragment=True, args=True)
 
-    if fixed_url.url.startswith('//'):
-        return fixed_url.set(scheme='https').url
-    elif fixed_url.url.startswith('/'):
-        return furl(root_url) \
-            .set(path='') \
-            .add(path=fixed_url.url) \
-            .url
+    if fixed_url.url.startswith("//"):
+        return fixed_url.set(scheme="https").url
+    elif fixed_url.url.startswith("/"):
+        return furl(root_url).set(path="").add(path=fixed_url.url).url
     else:
         return fixed_url.url
 
-def get_url_suffix(url: str) -> str:
-    path = furl(url).remove(
-        fragment=True,
-        args=True
-    ).pathstr
 
-    return Path(
-        path
-    ).suffix.lower()
+def get_url_suffix(url: str) -> str:
+    path = furl(url).remove(fragment=True, args=True).pathstr
+
+    return Path(path).suffix.lower()
+
 
 def asset_file_to_url(asset_file: Path) -> str:
-    asset_url = asset_file \
-            .relative_to(config['paths']['project_root']) \
-            .as_posix()
+    asset_url = asset_file.relative_to(
+        config["paths"]["project_root"]
+    ).as_posix()
 
-    return f'/{asset_url}'
+    return f"/{asset_url}"
+
 
 def is_data_url(url: str) -> bool:
-    return url \
-        .strip() \
-        .lower() \
-        .startswith('data:')
+    return url.strip().lower().startswith("data:")
+
 
 def is_anchor_url(url: str) -> bool:
-    return url.startswith('#')
+    return url.startswith("#")
+
 
 def resolve_url(url: str, base_url: str) -> str:
-    base_url = furl(base_url).remove(
-        fragment=True,
-        args=True
-    )
+    base_url = furl(base_url).remove(fragment=True, args=True)
 
     base_url \
-        .set(
-            path=base_url.path.segments[:-1]
-        ) \
+        .set(path=base_url.path.segments[:-1]) \
         .add(path=url) \
         .path \
         .normalize()
 
     return base_url.url
 
+
 def remove_outside_quotes(string):
-    return re.sub("""(?:^['"])|(?:['"]$)""", '', string)
+    return re.sub("""(?:^['"])|(?:['"]$)""", "", string)
 
-css_asset_urls_regex = re.compile(
-    """(?<=url\()[^)]+(?=\))""",
-    re.IGNORECASE
-)
 
-def extract_asset_urls_from_css(css: str, base_url: str) -> Generator[Tuple[str, str], None, None]:
+css_asset_urls_regex = re.compile(r"""(?<=url\()[^)]+(?=\))""", re.IGNORECASE)
+
+
+def extract_asset_urls_from_css(
+    css: str, base_url: str
+) -> Iterable[Tuple[str, str]]:
     for original_url in css_asset_urls_regex.findall(css):
         original_url = remove_outside_quotes(original_url)
 
         if not is_data_url(original_url) and not is_anchor_url(original_url):
-            url = furl(original_url).remove(
-                fragment=True,
-                args=True
-            )
+            url = furl(original_url).remove(fragment=True, args=True)
 
             if url.netloc is not None:
                 yield original_url, url.url
-            elif url.url.startswith('/'):
+            elif url.url.startswith("/"):
                 yield original_url, furl(base_url).set(path=url.path).url
             else:
                 yield original_url, resolve_url(url.url, base_url)
 
+
 css_asset_imports_regex = re.compile(
-    """@import +(?:url\()?['"]?([^.]+\.css)[^;]+;""",
-    re.IGNORECASE
+    r"""@import +(?:url\()?['"]?([^.]+\.css)[^;]+;""", re.IGNORECASE
 )
 
-def extract_import_urls_from_css(css: str, base_url: str) -> Generator[Tuple[str, str], None, None]:
+
+def extract_import_urls_from_css(
+    css: str, base_url: str
+) -> Iterable[Tuple[str, str]]:
     for match in css_asset_imports_regex.finditer(css):
         import_statement = match.group()
 
         for import_file in match.groups():
             import_url = resolve_url(import_file, base_url)
             yield import_statement, import_url
+
 
 def resolve_css_urls(css: str, root_url: str) -> str:
     extracted_urls = extract_asset_urls_from_css(css, root_url)
@@ -193,10 +205,7 @@ def resolve_css_urls(css: str, root_url: str) -> str:
         extracted_url_file = get_asset_url_file_identifier(extracted_url)
         extracted_url_asset_path = asset_file_to_url(extracted_url_file)
 
-        extractions_to_replace.append((
-            original_url,
-            extracted_url_asset_path
-        ))
+        extractions_to_replace.append((original_url, extracted_url_asset_path))
 
     extractions_to_replace = sorted(
         extractions_to_replace,
@@ -208,8 +217,11 @@ def resolve_css_urls(css: str, root_url: str) -> str:
 
     return css
 
+
 def resolve_css_imports(css: str, base_url: str) -> str:
-    for import_statement, import_url in extract_import_urls_from_css(css, base_url):
+    imports = extract_import_urls_from_css(css, base_url)
+
+    for import_statement, import_url in imports:
         import_file = get_asset_url_file_identifier(import_url)
         import_css = load_file(import_file)
 
@@ -217,62 +229,55 @@ def resolve_css_imports(css: str, base_url: str) -> str:
 
     return css
 
+
 def resolve_css(css: str, base_url: str) -> str:
     css = resolve_css_imports(css, base_url)
     css = resolve_css_urls(css, base_url)
 
     return css
 
-def replace_css_entity(tag: Node, css: str) -> None:
-    if tag.tag in ('style', 'link'):
-        style_tag = HTMLParser(
-            f'<style>{css}</style>'
-        ).head.child
 
-        if tag.tag == 'style':
+def replace_css_entity(tag: Node, css: str) -> None:
+    if tag.tag in ("style", "link"):
+        style_tag = HTMLParser(f"<style>{css}</style>").head.child
+
+        if tag.tag == "style":
             for attr, val in tag.attrs.items():
                 style_tag.attrs[attr] = val
 
         tag.replace_with(style_tag)
     else:
-        tag.attrs['style'] = css
+        tag.attrs["style"] = css
+
 
 def get_asset_url_file_identifier(url: str) -> Path:
-    root_url = furl(url).remove(
-        fragment=True,
-        path=True,
-        args=True
-    )
+    root_url = furl(url).remove(fragment=True, path=True, args=True)
 
-    folder_name = uuid5(
-        NAMESPACE_URL,
-        root_url.url
-    )
+    folder_name = uuid5(NAMESPACE_URL, root_url.url)
 
     folder = Path(
-        config['paths']['supplementary_files_dir']
+        config["paths"]["supplementary_files_dir"]
     ).joinpath(str(folder_name))
 
     if not folder.exists():
         folder.mkdir()
 
-    identifier = uuid5(
-        NAMESPACE_URL,
-        url
-    )
+    identifier = uuid5(NAMESPACE_URL, url)
 
     suffix = get_url_suffix(url)
 
-    return folder \
-        .joinpath(str(identifier)) \
-        .with_suffix(suffix)
+    return folder.joinpath(str(identifier)).with_suffix(suffix)
 
-def get_asset_tags(html: HTMLParser) -> Generator[Tuple[Node, str, str], None, None]:
+
+def get_asset_tags(html: HTMLParser) -> Iterable[Tuple[Node, str, str]]:
     for css_query, attr in [
-        ('svg image[xlink\:href]', 'xlink:href'),
-        ('*:matches(source, track, audio, video, embed, iframe, img)[src]', 'src'),
-        ('object[data]', 'data'),
-        ('link[rel*="stylesheet"][href]', 'href')
+        (r"svg image[xlink\:href]", "xlink:href"),
+        (
+            "*:matches(source, track, audio, video, embed, iframe, img)[src]",
+            "src"
+        ),
+        ("object[data]", "data"),
+        ('link[rel*="stylesheet"][href]', "href"),
     ]:
         for tag in html.css(css_query):
             url = tag.attrs.get(attr)
@@ -281,34 +286,35 @@ def get_asset_tags(html: HTMLParser) -> Generator[Tuple[Node, str, str], None, N
                 if get_url_suffix(url) in supplementary_file_formats:
                     yield tag, url, attr
 
-def load_html_document(document: TypeVar('DocumentVersion')) -> str:
-    if document.file_type.mimetype != 'text/html':
-        raise ValueError('This method can only be used on HTML documents.')
 
-    root_url = getattr(document, 'source', None)
-    file = getattr(document, 'file', None)
+def load_html_document(document: TypeVar("DocumentVersion")) -> str:
+    if document.file_type.mimetype != "text/html":
+        raise ValueError("This method can only be used on HTML documents.")
+
+    root_url = getattr(document, "source", None)
+    file = getattr(document, "file", None)
 
     if root_url is None:
         raise ValueError(
-            'This document does not have a source attached to it. '
-            'In order to resolve and load relative paths, a '
-            'document source is needed.'
+            "This document does not have a source attached to it. "
+            "In order to resolve and load relative paths, a "
+            "document source is needed."
         )
 
     if file is None:
-        raise ValueError('This document does not have a file attached to it.')
+        raise ValueError("This document does not have a file attached to it.")
 
     html = load_file(file)
     html = HTMLParser(html)
 
-    for script_tag in html.css('script'):
+    for script_tag in html.css("script"):
         script_tag.decompose()
 
-    for tag in html.css('style, *[style]'):
-        if tag.tag == 'style':
+    for tag in html.css("style, *[style]"):
+        if tag.tag == "style":
             css = tag.text(strip=True)
         else:
-            css = tag.attrs.get('style', '')
+            css = tag.attrs.get("style", "")
 
         css = resolve_css(css, root_url)
 
@@ -318,13 +324,10 @@ def load_html_document(document: TypeVar('DocumentVersion')) -> str:
         url = clean_url(url, root_url)
         asset_file = get_asset_url_file_identifier(url)
 
-        if tag.tag == 'link':
+        if tag.tag == "link":
             css = load_file(asset_file)
 
-            base_url = clean_url(
-                tag.attrs.get('href'),
-                root_url
-            )
+            base_url = clean_url(tag.attrs.get("href"), root_url)
 
             css = resolve_css(css, base_url)
 
@@ -332,13 +335,14 @@ def load_html_document(document: TypeVar('DocumentVersion')) -> str:
         else:
             tag.attrs[attr] = asset_file_to_url(asset_file)
 
-    for tag in html.css('html, body'):
-        tag_style = tag.attrs.get('style', '')
-        tag.attrs['style'] = f'min-width: unset;{tag_style}'
+    for tag in html.css("html, body"):
+        tag_style = tag.attrs.get("style", "")
+        tag.attrs["style"] = f"min-width: unset;{tag_style}"
 
     return html.html
 
-def generate_html_thumbnail(document: TypeVar('DocumentVersion')) -> QImage:
+
+def generate_html_thumbnail(document: TypeVar("DocumentVersion")) -> QImage:
     html = load_html_document(document)
 
     app = QApplication.instance()
@@ -360,7 +364,7 @@ def generate_html_thumbnail(document: TypeVar('DocumentVersion')) -> QImage:
     layout = QPageLayout(
         QPageSize(QPageSize.PageSizeId.A4),
         QPageLayout.Orientation.Portrait,
-        QMarginsF(0, 0, 0, 0)
+        QMarginsF(0, 0, 0, 0),
     )
 
     page_range = QPageRanges()
@@ -370,19 +374,20 @@ def generate_html_thumbnail(document: TypeVar('DocumentVersion')) -> QImage:
     loader.setZoomFactor(1)
     loader.setHtml(html)
 
-    loader \
-        .loadFinished \
-        .connect(lambda _: loader.printToPdf(
+    loader.loadFinished.connect(
+        lambda _: loader.printToPdf(
             _print_finished_callback,
             layout,
             page_range
-        ))
+        )
+    )
 
     app.exec()
 
     return image
 
-def generate_pdf_thumbnail(document: TypeVar('DocumentVersion')) -> QImage:
+
+def generate_pdf_thumbnail(document: TypeVar("DocumentVersion")) -> QImage:
     try:
         with fitz.open(document.file) as pdf:
             if pdf.page_count == 0:
@@ -390,19 +395,18 @@ def generate_pdf_thumbnail(document: TypeVar('DocumentVersion')) -> QImage:
 
             first_page = pdf.load_page(0)
 
-            image_bytes = first_page \
-                .get_pixmap() \
-                .tobytes()
+            image_bytes = first_page.get_pixmap().tobytes()
 
             return QImage.fromData(image_bytes)
 
     except (fitz.FileDataError, fitz.FileNotFoundError, fitz.EmptyFileError):
         ...
 
+
 def generate_document_thumbnail(
-    document: TypeVar('DocumentVersion'),
-    save_file: Optional[Path | str]=None,
-    size: Tuple[int, int]=(256, 256)
+    document: TypeVar("DocumentVersion"),
+    save_file: Optional[Path | str] = None,
+    size: Tuple[int, int] = (256, 256),
 ) -> None:
     if save_file is None:
         save_file = document.thumbnail_file
@@ -411,34 +415,35 @@ def generate_document_thumbnail(
 
     image = None
 
-    if document.file_type.mimetype == 'application/pdf':
+    if document.file_type.mimetype == "application/pdf":
         image = generate_pdf_thumbnail(document)
 
-    if document.file_type.mimetype == 'text/html':
+    if document.file_type.mimetype == "text/html":
         image = generate_html_thumbnail(document)
 
     if image is None:
-        image = QImage(config['paths']['no_thumbnail_file'])
+        image = QImage(config["paths"]["no_thumbnail_file"])
 
     image = image.scaled(
         *size,
         Qt.AspectRatioMode.KeepAspectRatio,
-        Qt.TransformationMode.SmoothTransformation
+        Qt.TransformationMode.SmoothTransformation,
     )
 
     image.save(save_file)
+
 
 def insert_text_into_pdf_page(
     page: fitz.Page,
     text: str,
     *,
-    horizontal_align_text: Optional[Literal['left', 'center', 'right']]='left',
-    vertical_align_text: Optional[Literal['top', 'bottom']]='top',
-    horizontal_offset: Number=25,
-    vertical_offset: Number=15,
-    font_name: str= 'helv',
-    font_size: int= 11,
-    color: Tuple[int, int, int]=(0, 0, 0)
+    horizontal_align_text: Optional[str] = "left",
+    vertical_align_text: Optional[str] = "top",
+    horizontal_offset: Number = 25,
+    vertical_offset: Number = 15,
+    font_name: str = "helv",
+    font_size: int = 11,
+    color: Tuple[int, int, int] = (0, 0, 0),
 ) -> None:
     page.clean_contents()
 
@@ -448,31 +453,30 @@ def insert_text_into_pdf_page(
         fontsize=font_size
     )
 
-    if vertical_align_text == 'top':
+    if vertical_align_text == "top":
         vertical_point = vertical_offset
-    elif vertical_align_text == 'bottom':
+    elif vertical_align_text == "bottom":
         vertical_point = page.mediabox[3] - vertical_offset
     else:
-        raise ValueError("The vertical_align_text argument must be either 'top' or 'bottom'.")
-
-    if horizontal_align_text == 'left':
-        text_point = fitz.Point(
-            horizontal_offset,
-            vertical_point
-
+        raise ValueError(
+            "Invalid vertical_align_text argument"
         )
-    elif horizontal_align_text == 'center':
-        text_point = fitz.Point(
-            (page.mediabox[2] - text_width) / 2,
+
+    if horizontal_align_text == "left":
+        text_point = fitz.Point(horizontal_offset, vertical_point)
+    elif horizontal_align_text == "center":
+        text_point = fitz.Point((
+            page.mediabox[2] - text_width) / 2,
             vertical_point
         )
-    elif horizontal_align_text == 'right':
+    elif horizontal_align_text == "right":
         text_point = fitz.Point(
-            page.mediabox[2] - text_width - horizontal_offset,
-            vertical_point
+            page.mediabox[2] - text_width - horizontal_offset, vertical_point
         )
     else:
-        raise ValueError("The horizontal_align_text argument must be either 'left', 'center', or 'right'.")
+        raise ValueError(
+            "Invalid horizontal_align_text argument"
+        )
 
     page.insert_text(
         point=text_point,
@@ -480,8 +484,9 @@ def insert_text_into_pdf_page(
         fontname=font_name,
         fontsize=font_size,
         color=color,
-        rotate=0
+        rotate=0,
     )
+
 
 def remove_trailing_whitespace(tag: Node) -> None:
     child_tag = tag.last_child
@@ -490,10 +495,11 @@ def remove_trailing_whitespace(tag: Node) -> None:
         return
 
     while (child_tag := child_tag.prev) is not None:
-        if child_tag.text(strip=True) == '':
+        if child_tag.text(strip=True) == "":
             child_tag.decompose()
         else:
             break
+
 
 def remove_leading_whitespace(tag: Node) -> None:
     child_tag = tag.child
@@ -502,24 +508,25 @@ def remove_leading_whitespace(tag: Node) -> None:
         return
 
     while (child_tag := child_tag.next) is not None:
-        if child_tag.prev.text(strip=True) == '':
+        if child_tag.prev.text(strip=True) == "":
             child_tag.prev.decompose()
         else:
             break
 
+
 def remove_extraneous_tags(tag: Node) -> None:
-    tags_to_unwrap = tag.css(
-        '*:not(mark):not(span.headline-wrapper)'
-    )
+    tags_to_unwrap = tag.css("*:not(mark):not(span.headline-wrapper)")
 
     for child_tag in tags_to_unwrap:
-        if child_tag.text(strip=True) == '':
-            child_tag.replace_with(' ')
+        if child_tag.text(strip=True) == "":
+            child_tag.replace_with(" ")
         else:
             child_tag.unwrap()
 
+
 def normalize_whitespace(text: str) -> str:
-    return re.sub('\s+', ' ', text).strip()
+    return re.sub(r"\s+", " ", text).strip()
+
 
 def clean_headline(headline: str) -> str:
     headline = HTMLParser(
@@ -534,12 +541,13 @@ def clean_headline(headline: str) -> str:
 
     return html
 
+
 def insert_html_as_pdf(
     pdf: fitz.Document,
     html: str | HTMLParser,
     *,
-    page_margins: Tuple[Number, Number, Number, Number]=(25, 25, 25, 25),
-    start_index: int=-1
+    page_margins: Tuple[Number, Number, Number, Number] = (25, 25, 25, 25),
+    start_index: int = -1,
 ) -> None:
     if isinstance(html, HTMLParser):
         html = html.html
@@ -558,33 +566,31 @@ def insert_html_as_pdf(
     layout = QPageLayout(
         QPageSize(QPageSize.PageSizeId.A4),
         QPageLayout.Orientation.Portrait,
-        QMarginsF(*page_margins)
+        QMarginsF(*page_margins),
     )
 
     loader = QWebEngineView()
     loader.setZoomFactor(1)
     loader.setHtml(html)
 
-    loader \
-        .loadFinished \
-        .connect(lambda _: loader \
-                 .page() \
-                 .printToPdf(_print_finished_callback, layout))
+    loader.loadFinished.connect(
+        lambda _: loader.page().printToPdf(_print_finished_callback, layout)
+    )
 
     app.exec()
 
+
 def hash_file(file: str | Path) -> str:
-    sha256  = hashlib.sha256()
+    sha256 = hashlib.sha256()
 
-    file_mem_view = memoryview(
-        bytearray(128 * 1024)
-    )
+    file_mem_view = memoryview(bytearray(128 * 1024))
 
-    with open(file, 'rb', buffering=0) as f:
+    with open(file, "rb", buffering=0) as f:
         while n := f.readinto(file_mem_view):
             sha256.update(file_mem_view[:n])
 
     return sha256.hexdigest()
+
 
 def hash_text(text: str | bytes) -> str:
     if isinstance(text, str):
