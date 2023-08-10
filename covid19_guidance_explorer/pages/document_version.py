@@ -113,6 +113,7 @@ modal_add_models = {
     'document-type': DocumentType
 }
 
+
 def document_version_add_handler_wrapper(field):
     def handler(data):
         model = modal_add_models[field]
@@ -121,6 +122,7 @@ def document_version_add_handler_wrapper(field):
         return True, model.get_select_values()
 
     return handler
+
 
 clientside_callback(
     """
@@ -207,6 +209,7 @@ clientside_callback(
     prevent_initial_call=True
 )
 
+
 @callback(
     Output('document-version-add-tag-toast', 'is_open'),
     Output('document-version-tags', 'options'),
@@ -216,6 +219,7 @@ clientside_callback(
 def document_version_add_tag_handler(data):
     Tag.create(**data)
     return True, Tag.get_select_values()
+
 
 clientside_callback(
     """
@@ -252,6 +256,7 @@ clientside_callback(
     prevent_initial_call=True
 )
 
+
 @callback(
     Output('document-version-add-file-type-toast', 'is_open'),
     Output('document-version-file-type', 'options'),
@@ -261,6 +266,7 @@ clientside_callback(
 def document_version_add_file_type_handler(data):
     FileType.create(**data)
     return True, FileType.get_select_values()
+
 
 clientside_callback(
     """
@@ -276,6 +282,7 @@ clientside_callback(
     prevent_initial_call=True
 )
 
+
 @callback(
     Output('document-version-delete-toast', 'is_open'),
     Input('document-version-delete-document-modal-delete-button', 'n_clicks'),
@@ -285,6 +292,7 @@ clientside_callback(
 def document_version_delete_document_handler(_, data):
     print('deleting document', data['document_id'])
     return True
+
 
 @callback(
     Output('document-version-download-file-toast', 'is_open'),
@@ -298,6 +306,7 @@ def document_version_download_file_handler(_, file_path):
         file_path
     )
 
+
 @callback(
     Output('document-version-download-processed-file-toast', 'is_open'),
     Output('document-version-download-processed-file', 'data'),
@@ -309,6 +318,7 @@ def document_version_download_processed_file_handler(_, file_path):
     return True, dcc.send_file(
         file_path
     )
+
 
 clientside_callback(
     """
@@ -365,6 +375,7 @@ clientside_callback(
     prevent_initial_call=True
 )
 
+
 @callback(
     Output('document-version-save-toast', 'is_open'),
     Input('document-version-save-button', 'n_clicks'),
@@ -400,6 +411,7 @@ def document_version_save_handler(_, data):
             } for i in values]) \
             .execute()
     return True
+
 
 def layout(document_id=None) -> html.Div:
     if document_id is None:
@@ -455,7 +467,6 @@ def layout(document_id=None) -> html.Div:
     document_issuer_long_name = document_issuer.get('long_name', '')
 
     file = getattr(document, 'presentation_ready_file', '')
-    processed_file = getattr(document, 'processed_file', '')
     original_file = getattr(document, 'file', '')
 
     processed_file_exists = getattr(
@@ -1122,7 +1133,10 @@ def layout(document_id=None) -> html.Div:
                                                             html.Span(
                                                                 [
                                                                     html.I(
-                                                                        className='bi bi-file-earmark-arrow-down dropdown-menu-icon'
+                                                                        className=(
+                                                                            'bi bi-file-earmark-arrow-down '
+                                                                            'dropdown-menu-icon'
+                                                                        )
                                                                     ),
                                                                     html.Span('Download File')
                                                                 ]
@@ -1133,7 +1147,9 @@ def layout(document_id=None) -> html.Div:
                                                             html.Span(
                                                                 [
                                                                     html.I(
-                                                                        className='bi bi-box-arrow-down dropdown-menu-icon'
+                                                                        className=(
+                                                                            'bi bi-box-arrow-down dropdown-menu-icon'
+                                                                        )
                                                                     ),
                                                                     html.Span('Download Processed File')
                                                                 ]
@@ -1604,7 +1620,7 @@ def layout(document_id=None) -> html.Div:
                                                     [
                                                         {'header': '1'},
                                                         {'header': '2'},
-                                                        {'font': [] }
+                                                        {'font': []}
                                                     ],
                                                     [{'size': []}],
                                                     [
@@ -1650,6 +1666,7 @@ def layout(document_id=None) -> html.Div:
             )
         ]
     )
+
 
 register_page(
     module=__name__,

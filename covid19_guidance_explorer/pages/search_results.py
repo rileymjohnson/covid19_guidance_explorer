@@ -1,4 +1,14 @@
-from dash import html, dcc, Output, Input, State, MATCH, callback, clientside_callback
+from dash import (
+    html,
+    dcc,
+    Output,
+    Input,
+    State,
+    MATCH,
+    callback,
+    clientside_callback
+)
+
 from dash_dangerously_set_inner_html import DangerouslySetInnerHTML
 import dash_bootstrap_components as dbc
 from typing import Dict
@@ -12,7 +22,10 @@ from covid19_guidance_explorer.pages import register_page
 
 search_modes = ('phrase', 'simple', 'plain', 'normal', 'string', 'regex')
 
-def parse_http_get_args(http_get_args: Dict[str, str]) -> Dict[str, str | int | bool]:
+
+def parse_http_get_args(
+    http_get_args: Dict[str, str]
+) -> Dict[str, str | int | bool]:
     if 'search_string' not in http_get_args:
         raise ValueError('A search_string argument is required.')
 
@@ -24,7 +37,9 @@ def parse_http_get_args(http_get_args: Dict[str, str]) -> Dict[str, str | int | 
         if search_mode is None:
             search_mode = 'simple'
         else:
-            raise ValueError('The search_mode passed is not a valid search mode.')
+            raise ValueError(
+                'The search_mode passed is not a valid search mode.'
+            )
 
     case_sensitive = http_get_args \
         .get('case_sensitive', '') \
@@ -55,6 +70,7 @@ def parse_http_get_args(http_get_args: Dict[str, str]) -> Dict[str, str | int | 
         'n': n
     }
 
+
 clientside_callback(
     """
     () => (
@@ -77,8 +93,14 @@ clientside_callback(
         ]
     }
     """,
-    Output({'type': 'search-results-item-collapse', 'index': MATCH}, 'is_open'),
-    Output({'type': 'search-results-item-button-icon', 'index': MATCH}, 'className'),
+    Output({
+        'type': 'search-results-item-collapse',
+        'index': MATCH
+    }, 'is_open'),
+    Output({
+        'type': 'search-results-item-button-icon',
+        'index': MATCH
+    }, 'className'),
     Input({'type': 'search-results-item-button', 'index': MATCH}, 'n_clicks'),
     State({'type': 'search-results-item-collapse', 'index': MATCH}, 'is_open'),
     prevent_initial_call=True
@@ -105,6 +127,7 @@ clientside_callback(
     prevent_initial_call=True
 )
 
+
 @callback(
     Output('search-results-download-csv', 'data'),
     Input('search-results-export-as-csv', 'n_clicks'),
@@ -120,6 +143,7 @@ def search_results_handle_export_as_csv(_, search_args):
     )
 
     return dcc.send_file(file)
+
 
 @callback(
     Output('search-results-download-xlsx', 'data'),
@@ -137,6 +161,7 @@ def search_results_handle_export_as_xlsx(_, search_args):
 
     return dcc.send_file(file)
 
+
 @callback(
     Output('search-results-download-pdf', 'data'),
     Input('search-results-export-as-pdf', 'n_clicks'),
@@ -152,6 +177,7 @@ def search_results_handle_export_as_pdf(_, search_args):
     )
 
     return dcc.send_file(file)
+
 
 @callback(
     Output('search-results-list', 'children'),
@@ -220,17 +246,23 @@ def search_results_handle_args_change(http_get_args):
 
             version_effective_date = group_version.effective_date
 
-            if version_effective_date is None or pd.isna(version_effective_date):
+            if version_effective_date is None or pd.isna(
+                version_effective_date
+            ):
                 version_effective_date = 'N/A'
             else:
-                version_effective_date = version_effective_date.strftime('%Y-%m-%d')
+                version_effective_date = version_effective_date \
+                    .strftime('%Y-%m-%d')
 
             version_termination_date = group_version.termination_date
 
-            if version_termination_date is None or pd.isna(version_termination_date):
+            if version_termination_date is None or pd.isna(
+                version_termination_date
+            ):
                 version_termination_date = 'N/A'
             else:
-                version_termination_date = version_termination_date.strftime('%Y-%m-%d')
+                version_termination_date = version_termination_date \
+                    .strftime('%Y-%m-%d')
 
             if group_version.headline != '':
                 headline = group_version.headline
@@ -243,8 +275,14 @@ def search_results_handle_args_change(http_get_args):
                         html.Tr(
                             [
                                 html.Th('Version #', className='text-nowrap'),
-                                html.Th('Effective Date', className='text-nowrap'),
-                                html.Th('Termination Date', className='text-nowrap'),
+                                html.Th(
+                                    'Effective Date',
+                                    className='text-nowrap'
+                                ),
+                                html.Th(
+                                    'Termination Date',
+                                    className='text-nowrap'
+                                ),
                                 html.Th('')
                             ]
                         )
@@ -259,7 +297,11 @@ def search_results_handle_args_change(http_get_args):
                                     html.Td(
                                         dcc.Link(
                                             dbc.Button(
-                                                html.I(className='bi bi-info-circle')
+                                                html.I(
+                                                    className=(
+                                                        'bi bi-info-circle'
+                                                    )
+                                                )
                                             ),
                                             href=version_url,
                                             style={'float': 'right'}
@@ -270,7 +312,7 @@ def search_results_handle_args_change(http_get_args):
                             html.Tr(
                                 html.Td(
                                     [
-                                        DangerouslySetInnerHTML(headline)    
+                                        DangerouslySetInnerHTML(headline)
                                     ],
                                     colSpan=4
                                 )
@@ -310,7 +352,10 @@ def search_results_handle_args_change(http_get_args):
                                                 className='mb-0'
                                             ) if title != '' else dbc.Alert(
                                                 'No Title',
-                                                class_name='fs-6 py-1 px-2 d-table mb-1 mt-1',
+                                                class_name=(
+                                                    'fs-6 py-1 px-2 '
+                                                    'd-table mb-1 mt-1'
+                                                ),
                                                 color='danger'
                                             ),
                                             className='styleless-link',
@@ -339,7 +384,10 @@ def search_results_handle_args_change(http_get_args):
                                     html.I(
                                         className='bi bi-chevron-down h4',
                                         id={
-                                            'type': 'search-results-item-button-icon',
+                                            'type': (
+                                                'search-results-'
+                                                'item-button-icon'
+                                            ),
                                             'index': i
                                         }
                                     ),
@@ -378,6 +426,7 @@ def search_results_handle_args_change(http_get_args):
         num_results_document_versions,
         num_pagination_pages
     )
+
 
 def layout(**http_get_args) -> html.Div:
     try:
@@ -427,13 +476,16 @@ def layout(**http_get_args) -> html.Div:
                                             dbc.Label('Search Mode'),
                                             dbc.Select(
                                                 options=[
-                                                    'phrase', 'simple', 'plain',
-                                                    'normal', 'string', 'regex'
+                                                    'phrase', 'simple',
+                                                    'plain', 'normal',
+                                                    'string', 'regex'
                                                 ],
                                                 value=search_mode,
                                                 disabled=True,
                                                 style={
-                                                    'backgroundColor': '#d4d4d4'
+                                                    'backgroundColor': (
+                                                        '#d4d4d4'
+                                                    )
                                                 }
                                             )
                                         ]
@@ -459,7 +511,10 @@ def layout(**http_get_args) -> html.Div:
                             dbc.Button(
                                 'Close',
                                 color='warning',
-                                id='search-results-search-query-modal-close-button'
+                                id=(
+                                    'search-results-search-'
+                                    'query-modal-close-button'
+                                )
                             )
                         ]
                     ),
@@ -485,7 +540,10 @@ def layout(**http_get_args) -> html.Div:
                                         html.Span(
                                             '',
                                             className='fw-bold',
-                                            id='search-results-num-document-versions'
+                                            id=(
+                                                'search-results-num'
+                                                '-document-versions'
+                                            )
                                         ),
                                         html.Span(' versions found...')
                                     ],
@@ -508,7 +566,10 @@ def layout(**http_get_args) -> html.Div:
                                     [
                                         dbc.DropdownMenuItem(
                                             'Search Query',
-                                            id='search-results-open-search-query-modal'
+                                            id=(
+                                                'search-results-open-'
+                                                'search-query-modal'
+                                            )
                                         ),
                                         dbc.DropdownMenuItem(
                                             'Analytics'
@@ -551,9 +612,15 @@ def layout(**http_get_args) -> html.Div:
                 [
                     dbc.Col(
                         [
-                            dbc.Label('Rows per page', class_name='small mb-0 mt-1'),
+                            dbc.Label(
+                                'Rows per page',
+                                class_name='small mb-0 mt-1'
+                            ),
                             dbc.Select(
-                                options=[{'label': i, 'value': i} for i in range(1, 11)],
+                                options=[{
+                                    'label': i,
+                                    'value': i
+                                } for i in range(1, 11)],
                                 value=http_get_args.get('n', 5),
                                 id='search-results-rows-per-page'
                             )
@@ -580,6 +647,7 @@ def layout(**http_get_args) -> html.Div:
             )
         ]
     )
+
 
 register_page(
     module=__name__,

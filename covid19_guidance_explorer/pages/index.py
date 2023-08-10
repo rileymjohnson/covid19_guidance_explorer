@@ -8,10 +8,13 @@ def layout() -> html.Div:
     return html.Div(
         dbc.Container(
             [
-                html.H1('Welcome to the COVID-19 Guidance Explorer', className='display-5'),
+                html.H1(
+                    'Welcome to the COVID-19 Guidance Explorer',
+                    className='display-5'
+                ),
                 html.P(
                     ('Use this tool to view, annotate, and '
-                    'search COVID-19 guidance documents'),
+                        'search COVID-19 guidance documents'),
                     className='lead',
                 ),
                 html.Hr(className='my-2'),
@@ -31,6 +34,7 @@ def layout() -> html.Div:
         ),
         className='p-3 bg-light rounded-3',
     )
+
 
 register_page(
     module=__name__,

@@ -47,7 +47,8 @@ def handled_table(_, __, page, rows_per_page, search_text):
             html.Td(f'{issuer.num_documents:,}'),
             html.Td(f'{issuer.num_document_versions:,}')
         ])
-    for issuer in document_issuers]
+        for issuer in document_issuers
+    ]
 
     table = dbc.Table(
         [
@@ -69,6 +70,7 @@ def handled_table(_, __, page, rows_per_page, search_text):
 
     return num_pages, table
 
+
 clientside_callback(
     """
     () => (
@@ -82,6 +84,7 @@ clientside_callback(
     Input('document-issuers-table-pagination', 'active_page'),
     Input('document-issuers-table-rows-per-page', 'value')
 )
+
 
 def layout() -> html.Div:
     return html.Div(
@@ -152,6 +155,7 @@ def layout() -> html.Div:
             )
         ]
     )
+
 
 register_page(
     module=__name__,

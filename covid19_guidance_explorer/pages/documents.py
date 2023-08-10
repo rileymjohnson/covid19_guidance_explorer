@@ -33,8 +33,9 @@ def handled_table(_, __, page, rows_per_page, search_text):
         html.Tr([
             html.Td(document.effective_date.strftime('%Y-%m-%d')),
             html.Td(
-                '' if document.termination_date is None \
-                    else document.termination_date.strftime('%Y-%m-%d')
+                '' if document.termination_date is None else document.termination_date.strftime(
+                    '%Y-%m-%d'
+                )
             ),
             html.Td(document.slug),
             html.Td(document.title),
@@ -47,7 +48,8 @@ def handled_table(_, __, page, rows_per_page, search_text):
                         color=t['color'],
                         className='me-1'
                     )
-                for t in getattr(document, 'tags', [])]
+                    for t in getattr(document, 'tags', [])
+                ]
             ),
             html.Td(
                 dcc.Link(
@@ -74,7 +76,8 @@ def handled_table(_, __, page, rows_per_page, search_text):
                 )
             )
         ])
-    for i, document in enumerate(documents)]
+        for i, document in enumerate(documents)
+    ]
 
     table = dbc.Table(
         [
@@ -98,6 +101,7 @@ def handled_table(_, __, page, rows_per_page, search_text):
 
     return num_pages, table
 
+
 clientside_callback(
     """
     () => (
@@ -111,6 +115,7 @@ clientside_callback(
     Input('documents-table-pagination', 'active_page'),
     Input('documents-table-rows-per-page', 'value')
 )
+
 
 def layout() -> html.Div:
     return html.Div(
@@ -181,6 +186,7 @@ def layout() -> html.Div:
             )
         ]
     )
+
 
 register_page(
     module=__name__,

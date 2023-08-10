@@ -22,7 +22,7 @@ clientside_callback(
             const { id } = parsePatternMatchingId(prop_id)
             return [id.index, true]
         }
-        
+
         return [dash_clientside.no_update, false]
     }
     """,
@@ -33,6 +33,7 @@ clientside_callback(
     Input('document-types-delete-are-you-sure-modal-cancel-button', 'n_clicks'),
     prevent_initial_call=True
 )
+
 
 @callback(
     Output('document-types-delete-toast', 'is_open'),
@@ -57,6 +58,7 @@ def document_types_delete_handler(_, document_type_id):
         .execute()
 
     return True
+
 
 clientside_callback(
     """
@@ -85,6 +87,7 @@ clientside_callback(
     prevent_initial_call=True
 )
 
+
 @callback(
     Output('document-types-new-toast', 'is_open'),
     Input('document-types-new-store', 'data'),
@@ -94,6 +97,7 @@ def document_types_new_handler(data):
     DocumentType.create(**data)
     return True
 
+
 clientside_callback(
     """
     () => ['', '']
@@ -102,6 +106,7 @@ clientside_callback(
     Output('document-types-add-document-type-modal-value-input', 'value'),
     Input('document-types-add-document-type-modal', 'is_open')
 )
+
 
 @callback(
     Output('document-types-table-pagination', 'max_value'),
@@ -158,7 +163,8 @@ def handled_table(_, __, page, rows_per_page, ___, ____, search_text):
                 style={'width': '70px'}
             )
         ])
-    for document_type in document_types]
+        for document_type in document_types
+    ]
 
     table = dbc.Table(
         [
@@ -180,6 +186,7 @@ def handled_table(_, __, page, rows_per_page, ___, ____, search_text):
 
     return num_pages, table
 
+
 clientside_callback(
     """
     () => (
@@ -193,6 +200,7 @@ clientside_callback(
     Input('document-types-table-pagination', 'active_page'),
     Input('document-types-table-rows-per-page', 'value')
 )
+
 
 def layout() -> html.Div:
     return html.Div(
@@ -403,6 +411,7 @@ def layout() -> html.Div:
             )
         ]
     )
+
 
 register_page(
     module=__name__,

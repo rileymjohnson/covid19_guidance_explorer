@@ -51,6 +51,7 @@ def layout() -> html.Div:
         className='p-3 bg-light rounded-3',
     )
 
+
 register_page(
     module=__name__,
     path='/scratchpad',

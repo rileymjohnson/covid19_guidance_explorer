@@ -27,16 +27,20 @@ pandas = "^1.5.3"
 jinja2 = "^3.1.2"
 pyqt6 = "^6.4.2"
 pyqt6-webengine = "^6.4.0"
-dash-bibtex = {path = "../dash_bibtex/dist/dash_bibtex-0.0.1.tar.gz"}
 dash-quill = "^0.0.4"
-dash-annotator = {path = "../dash_annotator/dist/dash_annotator-0.0.1.tar.gz"}
+dash-annotator = {path = "modules/dash_annotator/dist/dash_annotator-0.0.1.tar.gz"}
+dash-bibtex = {path = "modules/dash_bibtex/dist/dash_bibtex-0.0.1.tar.gz"}
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^6.0.0"
 black = "^23.3.0"
+isort = "^5.12.0"
 pytest = "^7.3.1"
 jupyterlab = "^4.0.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88

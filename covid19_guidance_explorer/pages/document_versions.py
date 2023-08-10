@@ -30,7 +30,7 @@ def handled_table(_, __, page, rows_per_page, search_text):
         search_string=search_string,
         quick_search=True
     )
-    
+
     table_body = [
         html.Tr([
             html.Td(
@@ -45,8 +45,9 @@ def handled_table(_, __, page, rows_per_page, search_text):
             ),
             html.Td(document_version.effective_date.strftime('%Y-%m-%d')),
             html.Td(
-                '' if document_version.termination_date is None \
-                    else document_version.termination_date.strftime('%Y-%m-%d')
+                '' if document_version.termination_date is None else document_version.termination_date.strftime(
+                    '%Y-%m-%d'
+                )
             ),
             html.Td(document_version.slug),
             html.Td(document_version.title),
@@ -59,7 +60,8 @@ def handled_table(_, __, page, rows_per_page, search_text):
                         color=t['color'],
                         className='me-1'
                     )
-                for t in getattr(document_version, 'tags', []) or []]
+                    for t in getattr(document_version, 'tags', []) or []
+                ]
             ),
             html.Td(
                 dcc.Link(
@@ -86,7 +88,8 @@ def handled_table(_, __, page, rows_per_page, search_text):
                 )
             )
         ])
-    for document_version in document_versions]
+        for document_version in document_versions
+    ]
 
     table = dbc.Table(
         [
@@ -111,6 +114,7 @@ def handled_table(_, __, page, rows_per_page, search_text):
 
     return num_pages, table
 
+
 clientside_callback(
     """
     () => (
@@ -124,6 +128,7 @@ clientside_callback(
     Input('document-versions-table-pagination', 'active_page'),
     Input('document-versions-table-rows-per-page', 'value')
 )
+
 
 def layout() -> html.Div:
     return html.Div(
@@ -194,6 +199,7 @@ def layout() -> html.Div:
             )
         ]
     )
+
 
 register_page(
     module=__name__,

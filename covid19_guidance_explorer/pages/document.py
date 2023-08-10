@@ -90,6 +90,7 @@ modal_add_models = {
     'document-type': DocumentType
 }
 
+
 def document_add_handler_wrapper(field):
     def handler(data):
         model = modal_add_models[field]
@@ -98,6 +99,7 @@ def document_add_handler_wrapper(field):
         return True, model.get_select_values()
 
     return handler
+
 
 clientside_callback(
     f"""
@@ -199,6 +201,7 @@ clientside_callback(
     prevent_initial_call=True
 )
 
+
 @callback(
     Output('document-add-tag-toast', 'is_open'),
     Output('document-tags', 'options'),
@@ -208,6 +211,7 @@ clientside_callback(
 def document_add_tag_handler(data):
     Tag.create(**data)
     return True, Tag.get_select_values()
+
 
 clientside_callback(
     """
@@ -244,6 +248,7 @@ clientside_callback(
     prevent_initial_call=True
 )
 
+
 @callback(
     Output('document-add-file-type-toast', 'is_open'),
     Output('document-file-type', 'options'),
@@ -253,6 +258,7 @@ clientside_callback(
 def document_add_file_type_handler(data):
     FileType.create(**data)
     return True, FileType.get_select_values()
+
 
 clientside_callback(
     """
@@ -268,6 +274,7 @@ clientside_callback(
     prevent_initial_call=True
 )
 
+
 @callback(
     Output('document-delete-toast', 'is_open'),
     Input('document-delete-document-modal-delete-button', 'n_clicks'),
@@ -277,6 +284,7 @@ clientside_callback(
 def document_delete_document_handler(_, data):
     print('deleting document', data['document_id'])
     return True
+
 
 clientside_callback(
     """
@@ -332,6 +340,7 @@ clientside_callback(
     prevent_initial_call=True
 )
 
+
 @callback(
     Output('document-save-toast', 'is_open'),
     Input('document-save-button', 'n_clicks'),
@@ -367,6 +376,7 @@ def document_save_handler(_, data):
             } for i in values]) \
             .execute()
     return True
+
 
 def layout(document_id=None) -> html.Div:
     if document_id is None:
@@ -463,13 +473,21 @@ def layout(document_id=None) -> html.Div:
                         ),
                         html.Div(
                             [
-                                html.H6(document_version['title']) if document_version['title'] \
-                                    != '' else dbc.Badge('No title', color='danger', class_name='mb-2'),
+                                html.H6(
+                                    document_version['title']
+                                ) if document_version['title'] != '' else dbc.Badge(
+                                    'No title',
+                                    color='danger',
+                                    class_name='mb-2'
+                                ),
                                 html.P(
                                     '{}—{}'.format(
                                         document_version['effective_date'].strftime('%Y-%m-%d'),
-                                        'N/A' if document_version['termination_date'] is None else \
-                                            document_version['termination_date'].strftime('%Y-%m-%d')
+                                        'N/A' if document_version[
+                                            'termination_date'
+                                        ] is None else document_version[
+                                            'termination_date'
+                                        ].strftime('%Y-%m-%d')
                                     ),
                                     className='text-muted mb-0'
                                 ),
@@ -1457,7 +1475,7 @@ def layout(document_id=None) -> html.Div:
                                                         [
                                                             {'header': '1'},
                                                             {'header': '2'},
-                                                            {'font': [] }
+                                                            {'font': []}
                                                         ],
                                                         [{'size': []}],
                                                         [
@@ -1517,6 +1535,7 @@ def layout(document_id=None) -> html.Div:
             )
         ]
     )
+
 
 register_page(
     module=__name__,

@@ -2,5 +2,10 @@
     "python.analysis.diagnosticSeverityOverrides": {},
     "python.defaultInterpreterPath": "C:\\Users\\riley\\AppData\\Local\\pypoetry\\Cache\\virtualenvs\\covid19app-YwEapWro-py3.11\\Scripts\\python.exe",
     "python.terminal.activateEnvironment": true,
-    "pytest.command": "C:\\Users\\riley\\AppData\\Local\\pypoetry\\Cache\\virtualenvs\\covid19app-YwEapWro-py3.11\\Scripts"
+    "pytest.command": "C:\\Users\\riley\\AppData\\Local\\pypoetry\\Cache\\virtualenvs\\covid19app-YwEapWro-py3.11\\Scripts",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true
+      },
+      "black-formatter.args": ["--config pyproject.toml"]
 }
